@@ -1,0 +1,12 @@
+Buscando em dicionario...
+Tempo dicionário: 4865.91 segundos
+Tempo total: 4865.91 segundos
+
+----------------------------------------
+
+Buscando em banco de senhas...
+123admin
+Tempo banco de senhas: 4451.43 segundos
+Tempo total: 9317.34 segundos
+
+----------------------------------------

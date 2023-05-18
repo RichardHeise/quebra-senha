@@ -1,0 +1,21 @@
+Buscando em dicionario...
+
+senha
+Tempo dicionário: 0.17 segundos
+Tempo total: 0.17 segundos
+
+----------------------------------------
+
+Buscando em banco de senhas...
+
+senha
+Tempo banco de senhas: 0.02 segundos
+Tempo total: 0.02 segundos
+
+----------------------------------------
+
+Buscando com força bruta...
+
+senha
+Tempo força bruta: 21.51 segundos
+Tempo total: 21.51 segundos

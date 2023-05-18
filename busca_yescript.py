@@ -2,65 +2,90 @@ import crypt
 import time
 import itertools
 
-entrada = input()
+tempo_dicio = tempo_banco = tempo_brute = 0
 
-salt = entrada.split('$')[0] + '$'
-salt += entrada.split('$')[1] + '$'
-salt += entrada.split('$')[2] + '$'
-salt += entrada.split('$')[3]
-hashIn = entrada.split('$')[4].rsplit(':')[0]
+# Função para obter o salt e o hash da entrada fornecida
+def get_salt_and_hash(entrada):
+    parts = entrada.split('$')
+    salt = '$'.join(parts[:4])
+    hashIn = parts[4].rsplit(':')[0]
+    hashIn = salt + '$' + hashIn
+    return salt, hashIn
 
-hashIn = salt + '$' + hashIn
-
-def busca_dicio():
+# Função para buscar no dicionário
+def busca_dicio(salt, hashIn):
     with open("dicionario_completo.txt", "r") as dicio:
         for linha in dicio:
-            if crypt.crypt(linha.strip(), salt) == hashIn:
-                print(linha.strip())
-                return 1
-    return 0
+            # Remover espaços em branco no início e no final da linha
+            stripped_line = linha.strip()
+            # Verificar se a linha criptografada corresponde ao hash da entrada
+            if crypt.crypt(stripped_line, salt) == hashIn:
+                print(stripped_line)
+                return True
+    return False
 
-def busca_passwords():
+# Função para buscar em banco de senhas
+def busca_passwords(salt, hashIn):
     with open("1MillionPasswords.txt", "r") as dicio:
         for linha in dicio:
-            if crypt.crypt(linha.strip(), salt) == hashIn:
-                print(linha.strip())
-                return 1
-    return 0
+            # Remover espaços em branco no início e no final da linha
+            stripped_line = linha.strip()
+            # Verificar se a linha criptografada corresponde ao hash da entrada
+            if crypt.crypt(stripped_line, salt) == hashIn:
+                print(stripped_line)
+                return True
+    return False
 
-def brute_force():
+# Função para busca por força bruta
+def brute_force(salt, hashIn):
     chars = "0123456789abcdefghijklmnopqrstuvwxyz"
-    combinacoes = []
-    for tamanho in range(7,8):
-        for i in itertools.product(chars, repeat=tamanho):
-            combinacoes = ''.join(i)
-            print(combinacoes)
+    max_length = 7
+    for tamanho in range(1, max_length+1):
+        for combination in itertools.product(chars, repeat=tamanho):
+            # Gerar a combinação atual
+            combinacoes = ''.join(combination)
+            # Verificar se a combinação criptografada corresponde ao hash da entrada
             if crypt.crypt(combinacoes, salt) == hashIn:
                 print(combinacoes)
-                return 1
-    return 0
-
+                return True
+    return False
 
 def main():
+    # Le entrada
+    entrada = input()
+    salt, hashIn = get_salt_and_hash(entrada)
 
+    # Buscar no dicionário
     print("Buscando em dicionario...")
-    tempo_total = time.time()
-    result = busca_dicio()
-    print(f"Tempo total: {time.time() - tempo_total:.02f} segundos")
-    if result: exit(0)
-    
+    tempo_dicio = time.time()
+    result = busca_dicio(salt, hashIn)
+    tempo_dicio = time.time() - tempo_dicio
+    print(f"Tempo dicionário: {tempo_dicio:.02f} segundos")
+    print(f"Tempo total: {tempo_dicio:.02f} segundos")
+    if result:
+        exit(0)
+
+    # Buscar em banco de senhas
     print("Buscando em banco de senhas...")
-    tempo_total = time.time()
-    result = busca_passwords()
-    print(f"Tempo total: {time.time() - tempo_total:.02f} segundos")
-    if result: exit(0)
+    tempo_banco = time.time()
+    result = busca_passwords(salt, hashIn)
+    tempo_banco = time.time() - tempo_banco
+    print(f"Tempo banco de senhas: {tempo_banco:.02f} segundos")
+    print(f"Tempo total: {tempo_dicio + tempo_banco:.02f} segundos")
+    if result:
+        exit(0)
 
-    print("Buscando com força bruta(vai demorar alguns dias, é sério)...")
-    tempo_total = time.time()
-    result = brute_force()
-    print(f"Tempo total: {time.time() - tempo_total:.02f} segundos")
-    if result: exit(0)
+    # Buscar por força bruta
+    print("Buscando com força bruta (vai demorar alguns dias, é sério)...")
+    tempo_brute = time.time()
+    result = brute_force(salt, hashIn)
+    tempo_brute = time.time() - tempo_brute
+    print(f"Tempo força bruta: {tempo_brute:.02f} segundos")
+    print(f"Tempo total: {tempo_dicio + tempo_banco + tempo_brute:.02f} segundos")
+    if result:
+        exit(0)
 
+    # Se a senha não for encontrada
     print("Senha não encontrada")
     exit(1)
 

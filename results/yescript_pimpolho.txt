@@ -1,0 +1,13 @@
+Buscando em dicionario...
+abacate
+Tempo dicionário: 12.20 segundos
+Tempo total: 12.20 segundos
+
+----------------------------------------
+
+Buscando em banco de senhas...
+abacate
+Tempo banco de senhas: 2084.00 segundos
+Tempo total: 2084.00 segundos
+
+----------------------------------------
